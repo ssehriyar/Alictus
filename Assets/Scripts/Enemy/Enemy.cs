@@ -6,7 +6,6 @@ public class Enemy : MonoBehaviour, IPoolable
 {
 	private StateMachine _stateMachine;
 
-	private bool _targetInRange;
 	[SerializeField] private float _moveSpeed;
 	[SerializeField] private Animator _animator;
 	[SerializeField] private AttackRange _attackRange;
@@ -14,6 +13,7 @@ public class Enemy : MonoBehaviour, IPoolable
 	public bool IsUsing { get; private set; }
 	public bool IsAlive { get; private set; }
 	public Player Target { get; set; }
+	public bool TargetInRange { get; set; }
 	public bool AttackCompleted { get; set; }
 
 	private void Awake()
@@ -27,8 +27,8 @@ public class Enemy : MonoBehaviour, IPoolable
 		Die die = new Die(this);
 
 		At(empty, moveAttackRange, () => IsUsing);
-		At(moveAttackRange, attackTarget, () => _targetInRange);
-		At(attackTarget, moveAttackRange, () => AttackCompleted && _targetInRange == false);
+		At(moveAttackRange, attackTarget, () => TargetInRange);
+		At(attackTarget, moveAttackRange, () => AttackCompleted && TargetInRange == false);
 		At(die, moveAttackRange, () => IsAlive);
 
 		_stateMachine.AddAnyTransition(die, () => IsAlive == false);
@@ -72,7 +72,7 @@ public class Enemy : MonoBehaviour, IPoolable
 
 	private void TargetInRangeHandler(bool b)
 	{
-		_targetInRange = b;
+		TargetInRange = b;
 	}
 
 	private void AttackAnimationCompletedHandler()
@@ -92,7 +92,6 @@ public class Enemy : MonoBehaviour, IPoolable
 
 	public void OnReuse()
 	{
-		Debug.Log("ONREUSE");
 		IsAlive = true;
 	}
 

@@ -12,6 +12,11 @@ public class GoldSpawnManager : MonoBehaviour
 	[SerializeField] private GameObject _goldPrefab;
 	[SerializeField] private Transform _player;
 
+	public void OnEnable()
+	{
+		EventBus<OnGoldCollected>.AddListener(GoldCollectedHandler);
+	}
+
 	public void Start()
 	{
 		for (int i = 0; i < _maxGoldAmountInPlay; i++)
@@ -30,5 +35,16 @@ public class GoldSpawnManager : MonoBehaviour
 
 			_goldPrefab.Reuse(spawnPos, Quaternion.identity);
 		}
+	}
+
+	private void GoldCollectedHandler(object sender, OnGoldCollected e)
+	{
+		_currentGoldInPlay--;
+		Spawn();
+	}
+
+	public void OnDisable()
+	{
+		EventBus<OnGoldCollected>.RemoveListener(GoldCollectedHandler);
 	}
 }

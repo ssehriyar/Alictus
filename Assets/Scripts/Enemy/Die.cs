@@ -10,6 +10,7 @@ public class Die : IState
 	public void OnEnter()
 	{
 		_enemy.TriggerAnimation(Animations.Die);
+		_enemy.TargetInRange = false;
 		EventBus<OnEnemyKilled>.Emit(_enemy, new OnEnemyKilled(_enemy));
 	}
 

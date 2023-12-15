@@ -13,6 +13,7 @@ public class PlayerAttack : MonoBehaviour
 	public void OnEnable()
 	{
 		EventBus<OnPlayerDie>.AddListener(PlayerDieHandler);
+		EventBus<OnEnemyKilled>.AddListener(EnemyKilledHandler);
 	}
 
 	private void Start()
@@ -29,7 +30,7 @@ public class PlayerAttack : MonoBehaviour
 
 	private void OnTriggerEnter(Collider other)
 	{
-		if (other.transform.root.TryGetComponent(out Enemy enemy) && enemy.IsAlive)
+		if (other.transform.root.TryGetComponent(out Enemy enemy) && enemy.IsAlive && _enemies.Contains(enemy) == false)
 		{
 			_enemies.Add(enemy);
 		}
@@ -76,8 +77,17 @@ public class PlayerAttack : MonoBehaviour
 		enabled = false;
 	}
 
+	private void EnemyKilledHandler(object sender, OnEnemyKilled e)
+	{
+		if (_enemies.Contains(e.Enemy))
+		{
+			_enemies.Remove(e.Enemy);
+		}
+	}
+
 	public void OnDisable()
 	{
 		EventBus<OnPlayerDie>.RemoveListener(PlayerDieHandler);
+		EventBus<OnEnemyKilled>.RemoveListener(EnemyKilledHandler);
 	}
 }

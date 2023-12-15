@@ -22,10 +22,6 @@ public class Weapon : MonoBehaviour
 	private void Move()
 	{
 		transform.position += _attackSpeed * Time.deltaTime * (_enemy.transform.position - transform.position).normalized;
-		//if ((transform.position - _enemy.transform.position).magnitude <= 0.1f)
-		//{
-		//	Destroy(gameObject);
-		//}
 	}
 
 	public void OnTriggerEnter(Collider other)
